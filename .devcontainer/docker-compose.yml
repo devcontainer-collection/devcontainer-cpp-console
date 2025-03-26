@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  main:
+    build:
+      context: .
+      dockerfile: ./containers/main/Dockerfile
+    #container_name: main-container
+    volumes:
+      # bind vscode workspace root path to container target
+      - type: bind
+        source: ../
+        target: /workspace
+        consistency: cached # 파일 시스템 캐싱 적용
+        
+    command: tail -f /dev/null # 컨테이너가 종료되지 않도록 설정

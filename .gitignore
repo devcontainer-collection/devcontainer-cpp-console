@@ -1,0 +1,28 @@
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows system files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux temporary/backup files
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# Logs
+*.log
+
+# Python, Node, IDE 등 기타 잡다한 환경 파일들
+__pycache__/
+*.pyc
+.idea/
+*.iml
+node_modules/
+venv/
+.venv/

@@ -1,0 +1,28 @@
+{
+  "name": "devcontainer-cpp-console",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "main",
+  "workspaceFolder": "/workspace",
+  // container startup script
+  "postCreateCommand": "sh /workspace/.devcontainer/containers/main/startup.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "ms-vscode.cmake-tools",
+        "webfreak.debug"// Native Debug (GDB/LDB)  
+        //last extension should not have a comma
+      ],
+      "settings": {
+        "files.eol": "\n",
+        "editor.tabSize": 4,
+        "editor.renderWhitespace": "all",
+        "editor.formatOnSave": true,
+        "remote.localPortHost": "allInterfaces",
+        "git.detectSubmodulesLimit": 70,
+        "editor.tabCompletion": "on",
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  }
+}
