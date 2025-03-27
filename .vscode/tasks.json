@@ -12,7 +12,8 @@
 			],
 			"options": {
 				"cwd": "${workspaceFolder}/app"
-			}
+			},
+			"hide": true
 		},
 		{
 			"label": "CMake: configure(release)",
@@ -25,7 +26,8 @@
 			],
 			"options": {
 				"cwd": "${workspaceFolder}/app"
-			}
+			},
+			"hide": true
 		},
 		{
 			"label": "CMake: clean all builds",
@@ -57,6 +59,27 @@
 			},
 			"dependsOn": [
 				"CMake: configure(debug)"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"label": "CMake: build release and strip",
+			"type": "shell",
+			"command": "cmake",
+			"args": [
+				"--build",
+				"build",
+				"--target",
+				"main"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/app"
+			},
+			"dependsOn": [
+				"CMake: configure(release)"
 			],
 			"group": {
 				"kind": "build",
@@ -99,9 +122,9 @@
 			"options": {
 				"cwd": "${workspaceFolder}/app"
 			},
-			"dependsOn": [
-				"CMake: configure(release)"
-			],
+			// "dependsOn": [
+			// 	"CMake: configure(release)"
+			// ],
 			"group": "build"
 		},
 		{
@@ -118,9 +141,9 @@
 			"options": {
 				"cwd": "${workspaceFolder}/app"
 			},
-			"dependsOn": [
-				"CMake: configure(release)"
-			],
+			// "dependsOn": [
+			// 	"CMake: configure(release)"
+			// ],
 			"group": "build"
 		},
 		{
@@ -137,9 +160,9 @@
 			"options": {
 				"cwd": "${workspaceFolder}/app"
 			},
-			"dependsOn": [
-				"CMake: configure(release)"
-			],
+			// "dependsOn": [
+			// 	"CMake: configure(release)"
+			// ],
 			"group": "build"
 		},
 		{
@@ -156,9 +179,9 @@
 			"options": {
 				"cwd": "${workspaceFolder}/app"
 			},
-			"dependsOn": [
-				"CMake: configure(release)"
-			],
+			// "dependsOn": [
+			// 	"CMake: configure(release)"
+			// ],
 			"group": "build"
 		},
 		{
@@ -175,9 +198,9 @@
 			"options": {
 				"cwd": "${workspaceFolder}/app"
 			},
-			"dependsOn": [
-				"CMake: configure(release)"
-			],
+			// "dependsOn": [
+			// 	"CMake: configure(release)"
+			// ],
 			"group": "build"
 		},
 		{
@@ -194,9 +217,9 @@
 			"options": {
 				"cwd": "${workspaceFolder}/app"
 			},
-			"dependsOn": [
-				"CMake: configure(release)"
-			],
+			// "dependsOn": [
+			// 	"CMake: configure(release)"
+			// ],
 			"group": "build"
 		}
 	]

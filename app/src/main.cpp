@@ -1,10 +1,10 @@
 #include <iostream>
 #include <string>
-// #include "../lib/string_utils/string_utils.h"
+
+#include "../lib/string_utils/string_utils.h"
 // or
-#include <string_utils.h>
-// CMakeLists.txt will find the header files with patterns matching
-// if you want to add more patterns or directories, you can add them in CMakeLists.txt
+// #include <string_utils.h>
+//  The debug include pattern is in cmakefiles.txt, and the cross-build pattern is in build-scripts/build.sh.
 
 int main()
 {

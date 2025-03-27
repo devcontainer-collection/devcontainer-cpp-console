@@ -2,9 +2,11 @@
 
 This repository provides a DevContainer setup for cpp.
 The Docker image is based on `RockyLinux:9.0`.
-The Docker image size is approximately 3.5GB after build.
+The Docker image size is approximately 4.0GB after build.
 
 Using Zig, cross-builds are supported for generating self-contained executables for various platforms.
+
+**Note:** This project uses **C++20** for debugging, release builds, and cross-builds.
 
 ### Host Platform Compatibility for Self-Contained Executable Builds
 
@@ -13,21 +15,21 @@ The results below are based on testing with macOS-x86_64 as the host platform. O
 | Target OS | Target Arch | Build         | Strip        |
 |-----------|-------------|---------------|--------------|
 | Windows   | x64         | OK            | OK           |
-| Windows   | arm64       | OK            | PLANNED      |
-| macOS     | x64         | OK            | NOT SUPPORTED|
-| macOS     | arm64       | OK            | NOT SUPPORTED|
+| Windows   | arm64       | OK            | Planned      |
+| macOS     | x64         | OK            | Not supported|
+| macOS     | arm64       | OK            | Not supported|
 | Linux     | x64         | OK            | OK           |
 | Linux     | arm64       | OK            | OK           |
 
 **Legend:**
 - **OK**: Fully supported and tested.
-- **NOT SUPPORTED**: Not supported for this configuration.
-- **PLANNED**: Planned for future support.
-- **NOT TESTED**: Not yet tested.
+- **Not supported**: Not supported for this configuration.
+- **Planned**: Planned for future support.
+- **Not tested**: Not yet tested.
 
 ---
 
-## Getting Started (with Dev Containers)
+## Getting Started (With Dev Containers)
 
 ### 1. Launch VSCode  
 Open Visual Studio Code.

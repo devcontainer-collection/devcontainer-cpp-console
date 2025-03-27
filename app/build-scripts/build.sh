@@ -1,8 +1,12 @@
 #!/bin/sh
 
-# Usage: sh build.sh <os> <arch> <basename> <build_type>
-# Example: sh build.sh linux x64 main-linux-x64-release release
-# Example: sh build.sh windows x86_64 main-windows-x64-debug debug
+# Usage: sh build.sh <basename> <os> <arch> <build_type>
+# Example: sh build.sh main linux x86_64 release
+# Example: sh build.sh main linux aarch64 debug
+# Example: sh build.sh main macos x86_64 debug
+# Example: sh build.sh main macos aarch64 debug
+# Example: sh build.sh main windows x86_64 release
+# Example: sh build.sh main windows aarch64 debug
 
 BASENAME="$1"
 OS="$2"
@@ -53,14 +57,14 @@ fi
 
 OUTPUT="${BUILDTYPE_OS_ARCH_PATH}/${BASENAME}-${OS}-${ARCH}-${BUILD_TYPE}${EXT}"
 
-# Compile with Zig
+# Compile with Zig(detect source files and include directories automatically)
 zig c++ \
   -target "$ZIG_TARGET" \
   $(find src lib -name '*.cpp') \
   $INCLUDES \
+  -std=c++20 \
   -o "$OUTPUT" \
   $DEBUG_FLAG $OPTIMIZE
-
 
 # if release build, strip the binary
 if [ "$BUILD_TYPE" = "release" ]; then
