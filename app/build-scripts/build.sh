@@ -70,7 +70,7 @@ zig c++ \
 if [ "$BUILD_TYPE" = "release" ]; then
     if [ "$OS" = "linux" ]; then
         if [ "$ARCH" = "x86_64" ]; then
-            strip "$OUTPUT"
+            x86_64-linux-gnu-strip "$OUTPUT"
         elif [ "$ARCH" = "aarch64" ]; then
             aarch64-linux-gnu-strip "$OUTPUT"
         fi
@@ -81,8 +81,7 @@ if [ "$BUILD_TYPE" = "release" ]; then
         if [ "$ARCH" = "x86_64" ]; then
             x86_64-w64-mingw32-strip "$OUTPUT"
         elif [ "$ARCH" = "aarch64" ]; then
-            #aarch64-w64-mingw32-strip "$OUTPUT"
-            echo "Strip is not available to Windows aarch64 executables"
+            aarch64-w64-mingw32-strip "$OUTPUT"
         fi
     fi
 fi
