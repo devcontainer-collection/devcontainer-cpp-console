@@ -21,7 +21,261 @@
         "remote.localPortHost": "allInterfaces",
         "git.detectSubmodulesLimit": 70,
         "editor.tabCompletion": "on",
-        "terminal.integrated.defaultProfile.linux": "bash"
+        "terminal.integrated.defaultProfile.linux": "bash",
+        //--------------------- launch in devcontainer ---------------------
+        "launch": {
+          "version": "0.2.0",
+          "configurations": [
+              {
+                  "name": "Debug main",
+                  "type": "cppdbg",
+                  "request": "launch",
+                  "program": "${workspaceFolder}/app/build/debug/main",
+                  "args": [],
+                  "stopAtEntry": false,
+                  "cwd": "${workspaceFolder}/app",
+                  "MIMode": "gdb",
+                  "miDebuggerPath": "/usr/bin/gdb",
+                  "setupCommands": [
+                      {
+                          "description": "Pretty-printing",
+                          "text": "-enable-pretty-printing",
+                          "ignoreFailures": true
+                      }
+                  ],
+                  "preLaunchTask": "CMake: build debug"
+              }
+          ]
+        },
+        //===================== launch in devcontainer =====================
+        //--------------------- tasks in devcontainer ---------------------
+        "tasks": {
+          "version": "2.0.0",
+          "tasks": [
+            {
+              "label": "CMake: configure(debug)",
+              "type": "shell",
+              "command": "cmake",
+              "args": [
+                "-B",
+                "build",
+                "-DCMAKE_BUILD_TYPE=Debug"
+              ],
+              "options": {
+                "cwd": "${workspaceFolder}/app"
+              },
+              "hide": true
+            },
+            {
+              "label": "CMake: configure(release)",
+              "type": "shell",
+              "command": "cmake",
+              "args": [
+                "-B",
+                "build",
+                "-DCMAKE_BUILD_TYPE=Release"
+              ],
+              "options": {
+                "cwd": "${workspaceFolder}/app"
+              },
+              "hide": true
+            },
+            {
+              "label": "CMake: clean all builds",
+              "type": "shell",
+              "command": "rm",
+              "args": [
+                "-rf",
+                "build"
+              ],
+              "options": {
+                "cwd": "${workspaceFolder}/app"
+              },
+              "problemMatcher": [
+                "$lessc"
+              ]
+            },
+            {
+              "label": "CMake: build debug",
+              "type": "shell",
+              "command": "cmake",
+              "args": [
+                "--build",
+                "build",
+                "--target",
+                "main"
+              ],
+              "options": {
+                "cwd": "${workspaceFolder}/app"
+              },
+              "dependsOn": [
+                "CMake: configure(debug)"
+              ],
+              "group": {
+                "kind": "build",
+                "isDefault": true
+              }
+            },
+            {
+              "label": "CMake: build release and strip",
+              "type": "shell",
+              "command": "cmake",
+              "args": [
+                "--build",
+                "build",
+                "--target",
+                "main"
+              ],
+              "options": {
+                "cwd": "${workspaceFolder}/app"
+              },
+              "dependsOn": [
+                "CMake: configure(release)"
+              ],
+              "group": {
+                "kind": "build",
+                "isDefault": true
+              }
+            },
+            {
+              "label": "Zig: build all release",
+              "type": "shell",
+              "command": "echo",
+              "args": [
+                "Building all release targets..."
+              ],
+              "options": {
+                "cwd": "${workspaceFolder}/app"
+              },
+              "dependsOn": [
+                "Zig: build macos-x86_64-release",
+                "Zig: build macos-aarch64-release",
+                "Zig: build linux-x86_64-release",
+                "Zig: build linux-aarch64-release",
+                "Zig: build windows-x86_64-release",
+                "Zig: build windows-aarch64-release"
+              ],
+              "group": {
+                "kind": "build"
+              }
+            },
+            {
+              "label": "Zig: build macos-x86_64-release",
+              "type": "shell",
+              "command": "sh",
+              "args": [
+                "./build-scripts/build.sh",
+                "main",
+                "macos",
+                "x86_64",
+                "release"
+              ],
+              "options": {
+                "cwd": "${workspaceFolder}/app"
+              },
+              // "dependsOn": [
+              // 	"CMake: configure(release)"
+              // ],
+              "group": "build"
+            },
+            {
+              "label": "Zig: build macos-aarch64-release",
+              "type": "shell",
+              "command": "sh",
+              "args": [
+                "./build-scripts/build.sh",
+                "main",
+                "macos",
+                "aarch64",
+                "release"
+              ],
+              "options": {
+                "cwd": "${workspaceFolder}/app"
+              },
+              // "dependsOn": [
+              // 	"CMake: configure(release)"
+              // ],
+              "group": "build"
+            },
+            {
+              "label": "Zig: build linux-x86_64-release",
+              "type": "shell",
+              "command": "sh",
+              "args": [
+                "./build-scripts/build.sh",
+                "main",
+                "linux",
+                "x86_64",
+                "release"
+              ],
+              "options": {
+                "cwd": "${workspaceFolder}/app"
+              },
+              // "dependsOn": [
+              // 	"CMake: configure(release)"
+              // ],
+              "group": "build"
+            },
+            {
+              "label": "Zig: build linux-aarch64-release",
+              "type": "shell",
+              "command": "sh",
+              "args": [
+                "./build-scripts/build.sh",
+                "main",
+                "linux",
+                "aarch64",
+                "release"
+              ],
+              "options": {
+                "cwd": "${workspaceFolder}/app"
+              },
+              // "dependsOn": [
+              // 	"CMake: configure(release)"
+              // ],
+              "group": "build"
+            },
+            {
+              "label": "Zig: build windows-x86_64-release",
+              "type": "shell",
+              "command": "sh",
+              "args": [
+                "./build-scripts/build.sh",
+                "main",
+                "windows",
+                "x86_64",
+                "release"
+              ],
+              "options": {
+                "cwd": "${workspaceFolder}/app"
+              },
+              // "dependsOn": [
+              // 	"CMake: configure(release)"
+              // ],
+              "group": "build"
+            },
+            {
+              "label": "Zig: build windows-aarch64-release",
+              "type": "shell",
+              "command": "sh",
+              "args": [
+                "./build-scripts/build.sh",
+                "main",
+                "windows",
+                "aarch64",
+                "release"
+              ],
+              "options": {
+                "cwd": "${workspaceFolder}/app"
+              },
+              // "dependsOn": [
+              // 	"CMake: configure(release)"
+              // ],
+              "group": "build"
+            }
+          ]
+        }
+        //===================== tasks in devcontainer =====================
       }
     }
   }
