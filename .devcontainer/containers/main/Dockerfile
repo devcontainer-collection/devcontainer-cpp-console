@@ -28,10 +28,10 @@ RUN dnf install -y \
     binutils-aarch64-linux-gnu \
     && dnf clean all
 
-    # mingw64-gcc \ # to install x86_64-w64-mingw32-strip
-    # mingw64-gcc-c++ \
-    # mingw64-winpthreads \
-    # mingw64-headers\
+# mingw64-gcc \ # to install x86_64-w64-mingw32-strip
+# mingw64-gcc-c++ \
+# mingw64-winpthreads \
+# mingw64-headers\
 
 
 # ----- install strip tools -----
@@ -44,9 +44,9 @@ RUN mkdir -p /tmp/binutils-src && cd /tmp/binutils-src && \
 RUN cd /tmp/binutils-src && \
     mkdir build-aarch64-w64 && cd build-aarch64-w64 && \
     ../binutils-${BINUTILS_VERSION}/configure \
-        --target=aarch64-w64-mingw32 \
-        --prefix=/opt/binutils-aarch64-w64 \
-        --disable-multilib && \
+    --target=aarch64-w64-mingw32 \
+    --prefix=/opt/binutils-aarch64-w64 \
+    --disable-multilib && \
     make -j$(nproc) && \
     make install
 # Add aarch64-w64-mingw32-strip to PATH
@@ -55,9 +55,9 @@ ENV PATH="/opt/binutils-aarch64-w64/bin:$PATH"
 RUN cd /tmp/binutils-src && \
     mkdir build-x86_64-linux && cd build-x86_64-linux && \
     ../binutils-${BINUTILS_VERSION}/configure \
-        --target=x86_64-linux-gnu \
-        --prefix=/opt/binutils-x86_64-linux \
-        --disable-multilib && \
+    --target=x86_64-linux-gnu \
+    --prefix=/opt/binutils-x86_64-linux \
+    --disable-multilib && \
     make -j$(nproc) && \
     make install
 # Add x86_64-linux-gnu-strip to PATH
@@ -66,13 +66,14 @@ ENV PATH="/opt/binutils-x86_64-linux/bin:$PATH"
 RUN rm -rf /tmp/binutils-src
 # ===== intall strip tools =====
 
-# zig 설치
+# install zig
 RUN curl -LO https://ziglang.org/download/0.14.0/zig-linux-x86_64-0.14.0.tar.xz && \
     tar -xf zig-linux-x86_64-0.14.0.tar.xz && \
     mv zig-linux-x86_64-0.14.0 /opt/zig && \
     ln -s /opt/zig/zig /usr/local/bin/zig && \
     rm zig-linux-x86_64-0.14.0.tar.xz
-    
+
+
 WORKDIR /workspace
 
 CMD ["tail", "-f", "/dev/null"]

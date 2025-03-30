@@ -1,4 +1,7 @@
+#output directory
 [Bb]uild/
+# strip.sh downloaded from devcontainer-tools repository
+**/build-scripts/strip.sh
 
 # Created by https://www.toptal.com/developers/gitignore/api/c++
 # Edit at https://www.toptal.com/developers/gitignore?templates=c++
