@@ -68,20 +68,6 @@ zig c++ \
 
 # if release build, strip the binary
 if [ "$BUILD_TYPE" = "release" ]; then
-    if [ "$OS" = "linux" ]; then
-        if [ "$ARCH" = "x86_64" ]; then
-            x86_64-linux-gnu-strip "$OUTPUT"
-        elif [ "$ARCH" = "aarch64" ]; then
-            aarch64-linux-gnu-strip "$OUTPUT"
-        fi
-    elif [ "$OS" = "macos" ]; then
-        echo "Strip is not available to macOS executables"
-        echo "Please use 'strip [executable]' on macOS(match with the target) to strip the executable"
-    elif [ "$OS" = "windows" ]; then
-        if [ "$ARCH" = "x86_64" ]; then
-            x86_64-w64-mingw32-strip "$OUTPUT"
-        elif [ "$ARCH" = "aarch64" ]; then
-            aarch64-w64-mingw32-strip "$OUTPUT"
-        fi
-    fi
+    echo "[build] Stripping binary..."
+    sh "$SCRIPT_DIR/strip.sh" --bin "$OUTPUT" --os "$OS" --arch "$ARCH"
 fi
