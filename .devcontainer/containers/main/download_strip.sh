@@ -1,4 +1,13 @@
 #!/bin/bash
+
+SCRIPT_NAME=$(basename "$0")
+echo "Running $SCRIPT_NAME..."
+
+if [ -n "$DEVCONTAINER_ENV" ]; then
+  echo "$SCRIPT_NAME: This script is only for use in a devcontainer."
+  exit 0
+fi
+
 set -e
 
 DEST_DIR="/workspace/app/build-scripts"
@@ -31,4 +40,6 @@ echo "[strip] strip.sh is updated in $DEST_DIR"
 # rm .gitignore
 rm -rf "$DEST_DIR/.gitignore"
 rm -rf "$TMPDIR"
-echo "[strip] Done!"
+
+echo "Exit $SCRIPT_NAME"
+echo
