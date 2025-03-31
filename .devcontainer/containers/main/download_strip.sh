@@ -3,7 +3,7 @@
 SCRIPT_NAME=$(basename "$0")
 echo "Running $SCRIPT_NAME..."
 
-if [ -n "$DEVCONTAINER_ENV" ]; then
+if [ ! -f "/.dockerenv" ]; then
   echo "$SCRIPT_NAME: This script is only for use in a devcontainer."
   exit 0
 fi
