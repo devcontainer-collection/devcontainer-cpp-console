@@ -1,21 +1,52 @@
 #!/bin/sh
 
-# Usage: sh build.sh <basename> <os> <arch> <build_type>
-# Example: sh build.sh main linux x86_64 release
-# Example: sh build.sh main linux aarch64 debug
-# Example: sh build.sh main macos x86_64 debug
-# Example: sh build.sh main macos aarch64 debug
-# Example: sh build.sh main windows x86_64 release
-# Example: sh build.sh main windows aarch64 debug
+# Usage:
+# sh build.sh --basename <name> --arch <arch> [--vendor <vendor>] --os <os> [--abi <abi>] --build-type <debug|release>
+# Example:
+# sh build.sh --basename main --arch x86_64 --os linux --build-type release
 
-BASENAME="$1"
-OS="$2"
-ARCH="$3"
-BUILD_TYPE="$4"
+# --- Parse named args ---
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --basename)
+      BASENAME="$2"
+      shift 2
+      ;;
+    --arch)
+      ARCH="$2"
+      shift 2
+      ;;
+    --vendor)
+      VENDOR="$2"
+      shift 2
+      ;;
+    --os)
+      OS="$2"
+      shift 2
+      ;;
+    --abi)
+      ABI="$2"
+      shift 2
+      ;;
+    --build-type)
+      BUILD_TYPE="$2"
+      shift 2
+      ;;
+    *)
+      echo "Unknown argument: $1"
+      exit 1
+      ;;
+  esac
+done
 
-if [ -z "$BASENAME" ] || [ -z "$OS" ] || [ -z "$ARCH" ] ||  [ -z "$BUILD_TYPE" ]; then
-    echo "Usage: $0 <basename> <os> <arch> <build_type>"
-    exit 1
+# --- Set defaults if needed ---
+[ -z "$VENDOR" ] && VENDOR="unknown"
+[ -z "$ABI" ] && ABI="gnu"
+
+# --- Validate ---
+if [ -z "$BASENAME" ] || [ -z "$ARCH" ] || [ -z "$OS" ] || [ -z "$BUILD_TYPE" ]; then
+  echo "Usage: $0 --basename <name> --arch <arch> [--vendor <vendor>] --os <os> [--abi <abi>] --build-type <debug|release>"
+  exit 1
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -27,28 +58,16 @@ mkdir -p ${BUILDTYPE_OS_ARCH_PATH}
 INCLUDES=$(find lib -type d -exec printf -- "-I%s " {} \;)
 
 # Compose Zig target triple
-if [ "$OS" = "macos" ]; then
-    ZIG_TARGET="$ARCH-macos"
-    EXT=""
-elif [ "$OS" = "windows" ]; then
-    ZIG_TARGET="$ARCH-windows-gnu"
-    EXT=".exe"
-elif [ "$OS" = "linux" ]; then
-    ZIG_TARGET="$ARCH-linux-gnu"
-    EXT=""
-else
-    echo "Unsupported OS: $OS"
-    exit 1
-fi
+ZIG_TARGET="$ARCH-$OS-$ABI"
+EXT=""
+[ "$OS" = "windows" ] && EXT=".exe"
 
 # Determine the build mode
 if [ "$BUILD_TYPE" = "release" ]; then
     OPTIMIZE="-O3"
-    # ex) release build: no debug symbols
     DEBUG_FLAG="-g0"
 elif [ "$BUILD_TYPE" = "debug" ]; then
     OPTIMIZE="-O0"
-    # ex) debug build: include debug symbols
     DEBUG_FLAG="-g -Og"
 else
     echo "Unsupported build type: $BUILD_TYPE"
@@ -66,8 +85,11 @@ zig c++ \
   -o "$OUTPUT" \
   $DEBUG_FLAG $OPTIMIZE
 
+echo "[build] Build complete: $OUTPUT"
+
 # if release build, strip the binary
 if [ "$BUILD_TYPE" = "release" ]; then
     echo "[build] Stripping binary..."
-    sh "$SCRIPT_DIR/strip.sh" --bin "$OUTPUT" --os "$OS" --arch "$ARCH"
+    echo "call strip with '$ARCH-$VENDOR-$OS-$ABI'"
+    sh "$SCRIPT_DIR/strip.sh" --bin "$OUTPUT" --target-triple "$ARCH-$VENDOR-$OS-$ABI"
 fi

@@ -151,129 +151,159 @@
                 "cwd": "${workspaceFolder}/app"
               },
               "dependsOn": [
-                "Zig: build macos-x86_64-release",
-                "Zig: build macos-aarch64-release",
-                "Zig: build linux-x86_64-release",
-                "Zig: build linux-aarch64-release",
-                "Zig: build windows-x86_64-release",
-                "Zig: build windows-aarch64-release"
+                "Zig: build x86_64-unknown-linux-gnu release",
+                "Zig: build aarch64-unknown-linux-gnu release",
+                "Zig: build x86_64-apple-macos-none release",
+                "Zig: build aarch64_ apple_macos-none release",
+                "Zig: build x86_64-pc-windows-gnu release",
+                "Zig: build aarch64-pc-windows-gnu release"
               ],
               "group": {
                 "kind": "build"
               }
             },
             {
-              "label": "Zig: build macos-x86_64-release",
+              "label": "Zig: build x86_64-unknown-linux-gnu release",
               "type": "shell",
               "command": "sh",
               "args": [
                 "./build-scripts/build.sh",
+                "--basename",
                 "main",
-                "macos",
+                "--arch",
                 "x86_64",
-                "release"
-              ],
-              "options": {
-                "cwd": "${workspaceFolder}/app"
-              },
-              // "dependsOn": [
-              // 	"CMake: configure(release)"
-              // ],
-              "group": "build"
-            },
-            {
-              "label": "Zig: build macos-aarch64-release",
-              "type": "shell",
-              "command": "sh",
-              "args": [
-                "./build-scripts/build.sh",
-                "main",
-                "macos",
-                "aarch64",
-                "release"
-              ],
-              "options": {
-                "cwd": "${workspaceFolder}/app"
-              },
-              // "dependsOn": [
-              // 	"CMake: configure(release)"
-              // ],
-              "group": "build"
-            },
-            {
-              "label": "Zig: build linux-x86_64-release",
-              "type": "shell",
-              "command": "sh",
-              "args": [
-                "./build-scripts/build.sh",
-                "main",
+                "--vendor",
+                "unknown",
+                "--os",
                 "linux",
-                "x86_64",
+                "--abi",
+                "gnu",
+                "--build-type",
                 "release"
               ],
               "options": {
                 "cwd": "${workspaceFolder}/app"
               },
-              // "dependsOn": [
-              // 	"CMake: configure(release)"
-              // ],
               "group": "build"
             },
             {
-              "label": "Zig: build linux-aarch64-release",
+              "label": "Zig: build aarch64-unknown-linux-gnu release",
               "type": "shell",
               "command": "sh",
               "args": [
                 "./build-scripts/build.sh",
+                "--basename",
                 "main",
+                "--arch",
+                "aarch64",
+                "--vendor",
+                "unknown",
+                "--os",
                 "linux",
-                "aarch64",
+                "--abi",
+                "gnu",
+                "--build-type",
                 "release"
               ],
               "options": {
                 "cwd": "${workspaceFolder}/app"
               },
-              // "dependsOn": [
-              // 	"CMake: configure(release)"
-              // ],
               "group": "build"
             },
             {
-              "label": "Zig: build windows-x86_64-release",
+              "label": "Zig: build x86_64-apple-macos-none release",
               "type": "shell",
               "command": "sh",
               "args": [
                 "./build-scripts/build.sh",
+                "--basename",
                 "main",
-                "windows",
+                "--arch",
                 "x86_64",
+                "--vendor",
+                "apple",
+                "--os",
+                "macos",
+                "--abi",
+                "none",
+                "--build-type",
                 "release"
               ],
               "options": {
                 "cwd": "${workspaceFolder}/app"
               },
-              // "dependsOn": [
-              // 	"CMake: configure(release)"
-              // ],
               "group": "build"
             },
             {
-              "label": "Zig: build windows-aarch64-release",
+              "label": "Zig: build aarch64_ apple_macos-none release",
               "type": "shell",
               "command": "sh",
               "args": [
                 "./build-scripts/build.sh",
+                "--basename",
                 "main",
-                "windows",
+                "--arch",
                 "aarch64",
+                "--vendor",
+                "apple",
+                "--os",
+                "macos",
+                "--abi",
+                "none",
+                "--build-type",
                 "release"
               ],
               "options": {
                 "cwd": "${workspaceFolder}/app"
               },
-              // "dependsOn": [
-              // 	"CMake: configure(release)"
-              // ],
+              "group": "build"
+            },
+            {
+              "label": "Zig: build x86_64-pc-windows-gnu release",
+              "type": "shell",
+              "command": "sh",
+              "args": [
+                "./build-scripts/build.sh",
+                "--basename",
+                "main",
+                "--arch",
+                "x86_64",
+                "--vendor",
+                "pc",
+                "--os",
+                "windows",
+                "--abi",
+                "gnu",
+                "--build-type",
+                "release"
+              ],
+              "options": {
+                "cwd": "${workspaceFolder}/app"
+              },
+              "group": "build"
+            },
+            {
+              "label": "Zig: build aarch64-pc-windows-gnu release",
+              "type": "shell",
+              "command": "sh",
+              "args": [
+                "./build-scripts/build.sh",
+                "--basename",
+                "main",
+                "--arch",
+                "aarch64",
+                "--vendor",
+                "pc",
+                "--os",
+                "windows",
+                "--abi",
+                "gnu",
+                "--build-type",
+                "release"
+              ],
+              "options": {
+                "cwd": "${workspaceFolder}/app"
+              },
               "group": "build"
             }
           ]
