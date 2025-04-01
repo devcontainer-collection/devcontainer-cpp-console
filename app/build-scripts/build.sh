@@ -52,7 +52,7 @@ done
 
 # --- Set defaults if needed ---
 [ -z "$VENDOR" ] && VENDOR="unknown"
-[ -z "$ABI" ] && ABI="gnu"
+# [ -z "$ABI" ] && ABI="gnu"
 
 # --- Validate ---
 if [ -z "$BASENAME" ] || [ -z "$ARCH" ] || [ -z "$OS" ] || [ -z "$BUILD_TYPE" ]; then
@@ -60,11 +60,20 @@ if [ -z "$BASENAME" ] || [ -z "$ARCH" ] || [ -z "$OS" ] || [ -z "$BUILD_TYPE" ];
   exit 1
 fi
 
+# make target triple
+if [ -z "$ABI" ]; then
+  TARGET_TRIPLE="$ARCH-$VENDOR-$OS"
+  # ex) x86_64-apple-darwin
+else
+  TARGET_TRIPLE="$ARCH-$VENDOR-$OS-$ABI"
+  # ex) x86_64-unknown-linux-gnu
+fi
+
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-ROOT_DIR="$SCRIPT_DIR/.."
-cd "$ROOT_DIR" || exit 1
-BUILDTYPE_OS_ARCH_PATH="build/${BUILD_TYPE}/${OS}-${ARCH}"
-mkdir -p ${BUILDTYPE_OS_ARCH_PATH}
+APP_DIR="$SCRIPT_DIR/.."
+cd "$APP_DIR" || exit 1
+BUILDTYPE_TARGET_TRIPLE_PATH="build/${BUILD_TYPE}/${TARGET_TRIPLE}"
+mkdir -p ${BUILDTYPE_TARGET_TRIPLE_PATH}
 
 INCLUDES=$(find lib -type d -exec printf -- "-I%s " {} \;)
 
@@ -85,7 +94,7 @@ else
     exit 1
 fi
 
-OUTPUT="${BUILDTYPE_OS_ARCH_PATH}/${BASENAME}-${OS}-${ARCH}-${BUILD_TYPE}${EXT}"
+OUTPUT="${BUILDTYPE_TARGET_TRIPLE_PATH}/${BASENAME}${EXT}"
 
 # Compile with Zig(detect source files and include directories automatically)
 zig c++ \
@@ -101,8 +110,8 @@ echo "[build] Build complete: $OUTPUT"
 # if release build, strip the binary
 if [ "$BUILD_TYPE" = "release" ]; then
     echo "[build] Stripping binary..."
-    echo "call strip with '$ARCH-$VENDOR-$OS-$ABI'"
-    sh "$SCRIPT_DIR/strip.sh" --bin "$OUTPUT" --target-triple "$ARCH-$VENDOR-$OS-$ABI"
+    echo "call strip with '${TARGET_TRIPLE}'"
+    sh "$SCRIPT_DIR/strip.sh" --bin "$OUTPUT" --target-triple "${TARGET_TRIPLE}"
 fi
 
 echo "Exit $SCRIPT_NAME"
