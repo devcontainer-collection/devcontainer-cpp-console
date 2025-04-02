@@ -306,7 +306,7 @@
               },
               "group": "build"
             },
-            //---------- build lib-dynamic tasks in devcontainer ----------
+            //---------- build libs tasks in devcontainer ----------
             {
               "label": "build lib-dynamic all platforms",
               "type": "shell",
@@ -318,23 +318,25 @@
                 "cwd": "${workspaceFolder}/app"
               },
               "dependsOn": [
-                "build dynamic-lib x86_64-unknown-linux-gnu",
-                "build dynamic-lib aarch64-unknown-linux-gnu",
-                "build dynamic-lib x86_64-apple-macos-none",
-                "build dynamic-lib aarch64-apple-macos-none",
-                "build dynamic-lib x86_64-pc-windows-gnu",
-                "build dynamic-lib aarch64-pc-windows-gnu"
+                "build lib-dynamic x86_64-unknown-linux-gnu",
+                "build lib-dynamic aarch64-unknown-linux-gnu",
+                "build lib-dynamic x86_64-apple-macos-none",
+                "build lib-dynamic aarch64-apple-macos-none",
+                "build lib-dynamic x86_64-pc-windows-gnu",
+                "build lib-dynamic aarch64-pc-windows-gnu"
               ],
               "group": {
                 "kind": "build"
               }
             },
             {
-              "label": "build dynamic-lib x86_64-unknown-linux-gnu",
+              "label": "build lib-dynamic x86_64-unknown-linux-gnu",
               "type": "shell",
               "command": "sh",
               "args": [
-                "./build-scripts/build-libs-dynamic.sh",
+                "./build-scripts/build-libs.sh",
+                "--type",
+                "dynamic",
                 "--arch",
                 "x86_64",
                 "--vendor",
@@ -351,11 +353,13 @@
               "hide": true
             },
             {
-              "label": "build dynamic-lib aarch64-unknown-linux-gnu",
+              "label": "build lib-dynamic aarch64-unknown-linux-gnu",
               "type": "shell",
               "command": "sh",
               "args": [
-                "./build-scripts/build-libs-dynamic.sh",
+                "./build-scripts/build-libs.sh",
+                "--type",
+                "dynamic",
                 "--arch",
                 "aarch64",
                 "--vendor",
@@ -372,11 +376,13 @@
               "hide": true
             },
             {
-              "label": "build dynamic-lib x86_64-apple-macos-none",
+              "label": "build lib-dynamic x86_64-apple-macos-none",
               "type": "shell",
               "command": "sh",
               "args": [
-                "./build-scripts/build-libs-dynamic.sh",
+                "./build-scripts/build-libs.sh",
+                "--type",
+                "dynamic",
                 "--arch",
                 "x86_64",
                 "--vendor",
@@ -393,11 +399,13 @@
               "hide": true
             },
             {
-              "label": "build dynamic-lib aarch64-apple-macos-none",
+              "label": "build lib-dynamic aarch64-apple-macos-none",
               "type": "shell",
               "command": "sh",
               "args": [
-                "./build-scripts/build-libs-dynamic.sh",
+                "./build-scripts/build-libs.sh",
+                "--type",
+                "dynamic",
                 "--arch",
                 "aarch64",
                 "--vendor",
@@ -414,11 +422,13 @@
               "hide": true
             },
             {
-              "label": "build dynamic-lib x86_64-pc-windows-gnu",
+              "label": "build lib-dynamic x86_64-pc-windows-gnu",
               "type": "shell",
               "command": "sh",
               "args": [
-                "./build-scripts/build-libs-dynamic.sh",
+                "./build-scripts/build-libs.sh",
+                "--type",
+                "dynamic",
                 "--arch",
                 "x86_64",
                 "--vendor",
@@ -435,11 +445,174 @@
               "hide": true
             },
             {
-              "label": "build dynamic-lib aarch64-pc-windows-gnu",
+              "label": "build lib-dynamic aarch64-pc-windows-gnu",
               "type": "shell",
               "command": "sh",
               "args": [
-                "./build-scripts/build-libs-dynamic.sh",
+                "./build-scripts/build-libs.sh",
+                "--type",
+                "dynamic",
+                "--arch",
+                "aarch64",
+                "--vendor",
+                "pc",
+                "--os",
+                "windows",
+                "--abi",
+                "gnu"
+              ],
+              "options": {
+                "cwd": "${workspaceFolder}/app"
+              },
+              "group": "build",
+              "hide": true
+            },
+            //all statics
+            {
+              "label": "build lib-static all platforms",
+              "type": "shell",
+              "command": "echo",
+              "args": [
+                "Building static libs for all platforms..."
+              ],
+              "options": {
+                "cwd": "${workspaceFolder}/app"
+              },
+              "dependsOn": [
+                "build lib-static x86_64-unknown-linux-gnu",
+                "build lib-static aarch64-unknown-linux-gnu",
+                "build lib-static x86_64-apple-macos-none",
+                "build lib-static aarch64-apple-macos-none",
+                "build lib-static x86_64-pc-windows-gnu",
+                "build lib-static aarch64-pc-windows-gnu"
+              ],
+              "group": {
+                "kind": "build"
+              }
+            },
+            {
+              "label": "build lib-static x86_64-unknown-linux-gnu",
+              "type": "shell",
+              "command": "sh",
+              "args": [
+                "./build-scripts/build-libs.sh",
+                "--type",
+                "static",
+                "--arch",
+                "x86_64",
+                "--vendor",
+                "unknown",
+                "--os",
+                "linux",
+                "--abi",
+                "gnu"
+              ],
+              "options": {
+                "cwd": "${workspaceFolder}/app"
+              },
+              "group": "build",
+              "hide": true
+            },
+            {
+              "label": "build lib-static aarch64-unknown-linux-gnu",
+              "type": "shell",
+              "command": "sh",
+              "args": [
+                "./build-scripts/build-libs.sh",
+                "--type",
+                "static",
+                "--arch",
+                "aarch64",
+                "--vendor",
+                "unknown",
+                "--os",
+                "linux",
+                "--abi",
+                "gnu"
+              ],
+              "options": {
+                "cwd": "${workspaceFolder}/app"
+              },
+              "group": "build",
+              "hide": true
+            },
+            {
+              "label": "build lib-static x86_64-apple-macos-none",
+              "type": "shell",
+              "command": "sh",
+              "args": [
+                "./build-scripts/build-libs.sh",
+                "--type",
+                "static",
+                "--arch",
+                "x86_64",
+                "--vendor",
+                "apple",
+                "--os",
+                "macos",
+                "--abi",
+                "none"
+              ],
+              "options": {
+                "cwd": "${workspaceFolder}/app"
+              },
+              "group": "build",
+              "hide": true
+            },
+            {
+              "label": "build lib-static aarch64-apple-macos-none",
+              "type": "shell",
+              "command": "sh",
+              "args": [
+                "./build-scripts/build-libs.sh",
+                "--type",
+                "static",
+                "--arch",
+                "aarch64",
+                "--vendor",
+                "apple",
+                "--os",
+                "macos",
+                "--abi",
+                "none"
+              ],
+              "options": {
+                "cwd": "${workspaceFolder}/app"
+              },
+              "group": "build",
+              "hide": true
+            },
+            {
+              "label": "build lib-static x86_64-pc-windows-gnu",
+              "type": "shell",
+              "command": "sh",
+              "args": [
+                "./build-scripts/build-libs.sh",
+                "--type",
+                "static",
+                "--arch",
+                "x86_64",
+                "--vendor",
+                "pc",
+                "--os",
+                "windows",
+                "--abi",
+                "gnu"
+              ],
+              "options": {
+                "cwd": "${workspaceFolder}/app"
+              },
+              "group": "build",
+              "hide": true
+            },
+            {
+              "label": "build lib-static aarch64-pc-windows-gnu",
+              "type": "shell",
+              "command": "sh",
+              "args": [
+                "./build-scripts/build-libs.sh",
+                "--type",
+                "static",
                 "--arch",
                 "aarch64",
                 "--vendor",
@@ -455,7 +628,7 @@
               "group": "build",
               "hide": true
             }
-            // ========== build lib-dynamic tasks in devcontainer ==========
+            // ========== build libs tasks in devcontainer ==========
           ]
         }
         //===================== tasks in devcontainer =====================
