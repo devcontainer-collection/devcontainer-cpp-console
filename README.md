@@ -10,16 +10,16 @@ This setup has been tested on macOS-x86_64 and Linux-x86_64 as host platforms, w
 
 **Note:** This project uses **C++20** for debugging, release builds, and cross-builds.
 
-### Host Platform Compatibility for Self-Contained Executable Builds
+### Target Platform Compatibility and Dynamic/Static Library Build Support
 
-| Target OS | Target Arch | Build         | Strip        |
-|-----------|-------------|---------------|--------------|
-| Windows   | x64         | OK            | OK           |
-| Windows   | arm64       | OK            | Planned      |
-| macOS     | x64         | OK            | Not supported|
-| macOS     | arm64       | OK            | Not supported|
-| Linux     | x64         | OK            | OK           |
-| Linux     | arm64       | OK            | OK           |
+| Target OS | Target Arch | Build | Strip        | Dynamic Library | Static Library |
+|-----------|-------------|--------|--------------|------------------|----------------|
+| Windows   | x64         | OK     | OK           | OK               | Planned        |
+| Windows   | arm64       | OK     | OK           | OK               | Planned        |
+| macOS     | x64         | OK     | Not supported| OK               | Planned        |
+| macOS     | arm64       | OK     | Not supported| OK               | Planned        |
+| Linux     | x64         | OK     | OK           | OK               | Planned        |
+| Linux     | arm64       | OK     | OK           | OK               | Planned        |
 
 **Legend:**
 - **OK**: Fully supported and tested.
