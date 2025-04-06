@@ -71,94 +71,139 @@ esac
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 APP_DIR="$SCRIPT_DIR/.."
 LIB_DIR="$APP_DIR/lib"
-PACKAGE_DIR="$APP_DIR/build/${BUILD_TYPE}/package"
+PACKAGE_DIR="$APP_DIR/build/${BUILD_TYPE}/packages"
 mkdir -p "$PACKAGE_DIR"
 
 echo "[build_libs_$BUILD_TYPE] Target: $ZIG_TARGET"
 
-# Track built libs
 BUILT_LIBS=""
 
-# Build loop
-for dir in "$LIB_DIR"/*/; do
-  NAME=$(basename "$dir")
-  CPP="${dir}${NAME}.cpp"
-  C_WRAPPER="${dir}${NAME}_c.cpp"
-  C_HEADER="${dir}${NAME}_c.h"
+if [ "$BUILD_TYPE" = "dynamic" ]; then
 
-  if [ "$OS" != "windows" ]; then
-    LIB_PREFIX="lib"
-  else
-    LIB_PREFIX=""
-  fi
+  for MODE in debug release; do
+    echo "[build_libs_dynamic] 🔧 Building $MODE..."
 
-  if [ -f "$CPP" ] && [ -f "$C_WRAPPER" ]; then
-    echo "[build_libs_$BUILD_TYPE] ▶️  Building $NAME..."
+    if [ "$MODE" = "debug" ]; then
+      ZIG_FLAGS="-O0 -g"
+    else
+      ZIG_FLAGS="-O3 -DNDEBUG"
+    fi
+    
+    for dir in "$LIB_DIR"/*/; do
+      NAME=$(basename "$dir")
+      CPP="${dir}${NAME}.cpp"
+      C_WRAPPER="${dir}${NAME}_c.cpp"
+      C_HEADER="${dir}${NAME}_c.h"
 
-    BASE_OUTDIR="$APP_DIR/build/${BUILD_TYPE}/${TARGET_TRIPLE}/${NAME}"
-    LIB_OUTDIR="${BASE_OUTDIR}/lib"
-    INCLUDE_OUTDIR="${BASE_OUTDIR}/include"
-    mkdir -p "$LIB_OUTDIR" "$INCLUDE_OUTDIR"
+      [ "$OS" = "windows" ] && LIB_PREFIX="" || LIB_PREFIX="lib"
 
-    case "$BUILD_TYPE" in
-      dynamic)
+      if [ -f "$CPP" ] && [ -f "$C_WRAPPER" ]; then
+        OUTDIR="$APP_DIR/build/dynamic/${TARGET_TRIPLE}/${NAME}/${MODE}"
+        INCLUDE_DIR="$APP_DIR/build/dynamic/${TARGET_TRIPLE}/${NAME}/include"
+        mkdir -p "$OUTDIR"
+
         zig c++ \
           -target "$ZIG_TARGET" \
+          $ZIG_FLAGS \
           -fPIC \
           -shared \
-          "$CPP" \
-          "$C_WRAPPER" \
+          "$CPP" "$C_WRAPPER" \
           -I"$dir" \
           -std=c++20 \
-          -o "${LIB_OUTDIR}/${LIB_PREFIX}${NAME}.${EXT}"
-        ;;
-      static)
-        OBJ1="${LIB_OUTDIR}/${NAME}.o"
-        OBJ2="${LIB_OUTDIR}/${NAME}_c.o"
-        ARCHIVE="${LIB_OUTDIR}/${LIB_PREFIX}${NAME}.${EXT}"
+          -o "$OUTDIR/${LIB_PREFIX}${NAME}.${EXT}"
 
-        zig c++ -target "$ZIG_TARGET" -c "$CPP" -I"$dir" -std=c++20 -o "$OBJ1"
-        zig c++ -target "$ZIG_TARGET" -c "$C_WRAPPER" -I"$dir" -std=c++20 -o "$OBJ2"
+        echo "[build_libs_dynamic] ✅ Built: $OUTDIR/${LIB_PREFIX}${NAME}.${EXT}"
+
+        if [ "$MODE" = "release" ]; then
+          bash "$SCRIPT_DIR/strip.sh" --bin "$OUTDIR/${LIB_PREFIX}${NAME}.${EXT}" --target-triple "$TARGET_TRIPLE"
+
+          if [ -f "$C_HEADER" ]; then
+            mkdir -p "$INCLUDE_DIR"
+            cp "$C_HEADER" "$INCLUDE_DIR/${NAME}.h"
+            echo "[include] Copied: $INCLUDE_DIR/${NAME}.h"
+          fi
+        fi
+
+        BUILT_LIBS="$BUILT_LIBS $NAME"
+      else
+        echo "[build_libs_dynamic] ⚠️ Skipped $NAME (missing ${NAME}.cpp or ${NAME}_c.cpp)"
+      fi
+    done
+  done
+
+  # Package
+  if [ -n "$BUILT_LIBS" ]; then
+    ARCHIVE_NAME="libs-dynamic-${TARGET_TRIPLE}.tar.gz"
+    ARCHIVE_PATH="$PACKAGE_DIR/$ARCHIVE_NAME"
+    tar -czf "$ARCHIVE_PATH" -C "$APP_DIR/build/dynamic/${TARGET_TRIPLE}" $BUILT_LIBS
+    echo "[packaging] ✅ Created: $ARCHIVE_PATH"
+  else
+    echo "[packaging] ⚠️ Nothing to package."
+  fi
+
+else
+  # static
+  for MODE in debug release; do
+    echo "[build_libs_static] 🔧 Building $MODE..."
+
+    if [ "$MODE" = "debug" ]; then
+      ZIG_FLAGS="-O0 -g -fno-sanitize=undefined"
+    else
+      ZIG_FLAGS="-O3 -DNDEBUG -fno-sanitize=undefined"
+    fi
+    
+    for dir in "$LIB_DIR"/*/; do
+      NAME=$(basename "$dir")
+      CPP="${dir}${NAME}.cpp"
+      C_WRAPPER="${dir}${NAME}_c.cpp"
+      C_HEADER="${dir}${NAME}_c.h"
+
+      [ "$OS" = "windows" ] && LIB_PREFIX="" || LIB_PREFIX="lib"
+
+      if [ -f "$CPP" ] && [ -f "$C_WRAPPER" ]; then
+        OUTDIR="$APP_DIR/build/static/${TARGET_TRIPLE}/${NAME}/${MODE}"
+        INCLUDE_OUTDIR="$APP_DIR/build/static/${TARGET_TRIPLE}/${NAME}/include"
+        mkdir -p "$OUTDIR"
+
+        OBJ1="${OUTDIR}/${NAME}.o"
+        OBJ2="${OUTDIR}/${NAME}_c.o"
+        ARCHIVE="${OUTDIR}/${LIB_PREFIX}${NAME}.${EXT}"
+
+        zig c++ -target "$ZIG_TARGET" $ZIG_FLAGS -c "$CPP" -I"$dir" -std=c++20 -o "$OBJ1"
+        zig c++ -target "$ZIG_TARGET" $ZIG_FLAGS -c "$C_WRAPPER" -I"$dir" -std=c++20 -o "$OBJ2"
+
+        if [ "$MODE" = "release" ]; then
+          bash "$SCRIPT_DIR/strip.sh" --bin "$OBJ1" --target-triple "$TARGET_TRIPLE"
+          bash "$SCRIPT_DIR/strip.sh" --bin "$OBJ2" --target-triple "$TARGET_TRIPLE"
+        fi
 
         zig ar rcs "$ARCHIVE" "$OBJ1" "$OBJ2"
-
-        # 중간 산물 정리
         rm -f "$OBJ1" "$OBJ2"
-        ;;
-      *)
-        echo "[build] Unknown build type: $BUILD_TYPE"
-        exit 1
-        ;;
-    esac
 
-    echo "[build_libs_$BUILD_TYPE] ✅ Built: ${LIB_OUTDIR}/${LIB_PREFIX}${NAME}.${EXT}"
+        echo "[build_libs_static] ✅ Built: $ARCHIVE"
 
-    if [ -f "$C_HEADER" ]; then
-      cp "$C_HEADER" "${INCLUDE_OUTDIR}/${NAME}.h"
-      echo "[build_libs_$BUILD_TYPE] 📄 Copied: ${INCLUDE_OUTDIR}/${NAME}.h"
-    else
-      echo "[build_libs_$BUILD_TYPE] ⚠️  No header file found for $NAME"
-    fi
+        if [ "$MODE" = "release" ] && [ -f "$C_HEADER" ]; then
+          mkdir -p "$INCLUDE_OUTDIR"
+          cp "$C_HEADER" "${INCLUDE_OUTDIR}/${NAME}.h"
+          echo "[include] Copied: ${INCLUDE_OUTDIR}/${NAME}.h"
+        fi
 
-    BUILT_LIBS="$BUILT_LIBS $NAME"
+        BUILT_LIBS="$BUILT_LIBS $NAME"
+      else
+        echo "[build_libs_static] ⚠️ Skipped $NAME (missing source)"
+      fi
+    done
+  done
+
+  # Package
+  if [ -n "$BUILT_LIBS" ]; then
+    ARCHIVE_NAME="libs-static-${TARGET_TRIPLE}.tar.gz"
+    ARCHIVE_PATH="$PACKAGE_DIR/$ARCHIVE_NAME"
+    tar -czf "$ARCHIVE_PATH" -C "$APP_DIR/build/static/${TARGET_TRIPLE}" $BUILT_LIBS
+    echo "[packaging] ✅ Created: $ARCHIVE_PATH"
   else
-    echo "[build_libs_$BUILD_TYPE] ⚠️ Skipped $NAME (missing ${NAME}.cpp or ${NAME}_c.cpp)"
+    echo "[packaging] ⚠️ Nothing to package."
   fi
-done
-
-# Packaging
-if [ -n "$BUILT_LIBS" ]; then
-  echo "[packaging] 📦 Packaging all built libraries into one archive..."
-
-  ARCHIVE_NAME="libs-${BUILD_TYPE}-${TARGET_TRIPLE}.tar.gz"
-  ARCHIVE_PATH="$PACKAGE_DIR/${ARCHIVE_NAME}"
-
-  SHARED_BASE="$APP_DIR/build/${BUILD_TYPE}/${TARGET_TRIPLE}"
-  tar -czf "$ARCHIVE_PATH" -C "$SHARED_BASE" $BUILT_LIBS
-
-  echo "[packaging] ✅ Done: $ARCHIVE_PATH"
-else
-  echo "[packaging] ⚠️ No libraries built, skipping packaging."
 fi
 
 echo "[build_libs_$BUILD_TYPE] ✅ All done."

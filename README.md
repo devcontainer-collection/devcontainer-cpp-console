@@ -14,12 +14,12 @@ This setup has been tested on macOS-x86_64 and Linux-x86_64 as host platforms, w
 
 | Target OS | Target Arch | Build | Strip        | Dynamic Library | Static Library |
 |-----------|-------------|--------|--------------|------------------|----------------|
-| Windows   | x64         | OK     | OK           | OK               | Planned        |
-| Windows   | arm64       | OK     | OK           | OK               | Planned        |
-| macOS     | x64         | OK     | Not supported| OK               | Planned        |
-| macOS     | arm64       | OK     | Not supported| OK               | Planned        |
-| Linux     | x64         | OK     | OK           | OK               | Planned        |
-| Linux     | arm64       | OK     | OK           | OK               | Planned        |
+| Windows   | x64         | OK     | OK           | OK               | OK             |
+| Windows   | arm64       | OK     | OK           | OK               | OK             |
+| macOS     | x64         | OK     | Not supported| OK               | OK             |
+| macOS     | arm64       | OK     | Not supported| OK               | OK             |
+| Linux     | x64         | OK     | OK           | OK               | OK             |
+| Linux     | arm64       | OK     | OK           | OK               | OK             |
 
 **Legend:**
 - **OK**: Fully supported and tested.
@@ -55,3 +55,21 @@ If you see a message in the **Debug Console** after starting the project, switch
 
 ### 7. Cross-Build the Project  
 Open the command palette: Press **Ctrl + Shift + P** (macOS: **Cmd + Shift + P**) → **Tasks: Run Task** → **Zig: build all releases**.
+
+### 8. Library Build and Testing  
+This section explains how to build and test dynamic and static libraries for all supported platforms.
+
+#### 8.1 Build Dynamic Libraries for All Supported Platforms  
+Open the command palette: Press **Ctrl + Shift + P** (macOS: **Cmd + Shift + P**) → **Tasks: Run Task** → **Zig: build lib-dynamic all platforms**.  
+The dynamic libraries for all target platforms will be built and compressed into `.tar.gz` archives.  
+You can find the resulting files in the `[WORKSPACE_FOLDER]/app/build/dynamic/packages/` directory, organized by target platform.
+
+#### 8.2 Build Static Libraries for All Supported Platforms  
+Open the command palette: Press **Ctrl + Shift + P** (macOS: **Cmd + Shift + P**) → **Tasks: Run Task** → **Zig: build lib-static all platforms**.  
+The static libraries for all target platforms will be built and compressed into `.tar.gz` archives.  
+You can find the resulting files in the `[WORKSPACE_FOLDER]/app/build/static/packages/` directory, organized by target platform.
+
+#### 8.3 Test the Built Libraries  
+An example C++ project for testing the libraries is located at `[WORKSPACE_FOLDER]/app/example/libtest`.  
+Refer to the `how-to-test-[OS].txt` file in the same directory for instructions on how to test the libraries.  
+**Note:** Testing must be performed on the respective target OS for the libraries.
