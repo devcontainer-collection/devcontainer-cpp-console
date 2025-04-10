@@ -1,14 +1,16 @@
 #!/bin/bash
 
+set -e
+
 SCRIPT_NAME=$(basename "$0")
+
+trap 'echo "Exit $SCRIPT_NAME"' EXIT
 echo "Running $SCRIPT_NAME..."
 
 if [ ! -f "/.dockerenv" ]; then
   echo "$SCRIPT_NAME: This script is only for use in a devcontainer."
   exit 0
 fi
-
-set -e
 
 DEST_DIR="/workspace/app/build-scripts"
 VERSION_FILE="$DEST_DIR/strip-tag.txt"
@@ -41,5 +43,3 @@ echo "[strip] strip.sh is updated in $DEST_DIR"
 rm -rf "$DEST_DIR/.gitignore"
 rm -rf "$TMPDIR"
 
-echo "Exit $SCRIPT_NAME"
-echo

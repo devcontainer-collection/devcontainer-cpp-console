@@ -1,8 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
 SCRIPT_NAME=$(basename "$0")
+
+trap 'echo "Exit $SCRIPT_NAME"' EXIT
 echo "Running $SCRIPT_NAME..."
 
 if [ ! -f "/.dockerenv" ]; then
@@ -207,4 +209,4 @@ else
 fi
 
 echo "[build_libs_$BUILD_TYPE] ✅ All done."
-echo "Exit $SCRIPT_NAME"
+

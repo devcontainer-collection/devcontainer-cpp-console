@@ -6,11 +6,14 @@ services:
       context: .
       dockerfile: ./containers/main/Dockerfile
     #container_name: main-container
+    # ports:
+      # - "8000:8000" # port mapping(not necessary for devcontainer)
+      # - "38000:8000" # port mapping(uncomment this line if you want forward to host as specific port)
     volumes:
       # bind vscode workspace root path to container target
       - type: bind
         source: ../
         target: /workspace
-        # consistency: cached # (optional) for performance
+        consistency: cached # for macOS(optional for performance)
         
     command: tail -f /dev/null # keep the container running

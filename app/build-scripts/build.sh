@@ -1,15 +1,16 @@
-#!/bin/sh
+#!/bin/bash
 
+set -e
 
 SCRIPT_NAME=$(basename "$0")
+
+trap 'echo "Exit $SCRIPT_NAME"' EXIT
 echo "Running $SCRIPT_NAME..."
 
 if [ ! -f "/.dockerenv" ]; then
   echo "$SCRIPT_NAME: This script is only for use in a devcontainer."
   exit 0
 fi
-
-set -e
 
 # Usage:
 # sh build.sh --basename <name> --arch <arch> [--vendor <vendor>] --os <os> [--abi <abi>] --build-type <debug|release>
@@ -113,6 +114,3 @@ if [ "$BUILD_TYPE" = "release" ]; then
     echo "call strip with '${TARGET_TRIPLE}'"
     sh "$SCRIPT_DIR/strip.sh" --bin "$OUTPUT" --target-triple "${TARGET_TRIPLE}"
 fi
-
-echo "Exit $SCRIPT_NAME"
-echo

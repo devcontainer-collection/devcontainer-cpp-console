@@ -4,7 +4,7 @@ This repository provides a DevContainer setup for C++.
 The Docker image is based on `RockyLinux:9.0`.
 The Docker image size is approximately 4.0GB after build.
 
-This setup has been tested on macOS-x86_64 and Linux-x86_64 as host platforms, with Linux-x86_64 as the container runtime. Compatibility with other environments is not guaranteed.
+This setup has been tested on macOS-x86_64 and Linux-x86_64 as host platforms, with Linux-x86_64 as the container runtime. Compatibility with other environments has not been verified.
 
 `Zig` is used to perform cross-builds for creating self-contained executables for various platforms.
 
@@ -25,7 +25,14 @@ This setup has been tested on macOS-x86_64 and Linux-x86_64 as host platforms, w
 - **OK**: Fully supported and tested.
 - **Not supported**: Not supported for this configuration.
 - **Planned**: Planned for future support.
-- **Not tested**: Not yet tested.
+- **Not tested**: Not yet tested.  
+
+## Support This Project
+  
+If you found this project helpful, consider supporting its maintenance and future development with a small donation.  
+You can buy me a coffee via the Ko-fi link below — thank you! ☕✨  
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0B21CR05U)
 
 ---
 

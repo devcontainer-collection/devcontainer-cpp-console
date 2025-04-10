@@ -3,7 +3,7 @@
   "dockerComposeFile": "docker-compose.yml",
   "service": "main",
   "workspaceFolder": "/workspace",
-  // container startup script
+  // This script is executed only once after the image is built
   "postCreateCommand": "sh /workspace/.devcontainer/containers/main/startup.sh",
   // "postStartCommand":"",
   // "postAttachCommand": "",
@@ -46,7 +46,9 @@
                   "ignoreFailures": true
                 }
               ],
-              "preLaunchTask": "CMake: build debug"
+              "preLaunchTask": "CMake: build debug",
+              // "showLog": false,
+              "console": "integratedTerminal"
             }
           ]
         },
@@ -113,11 +115,11 @@
               },
               "dependsOn": [
                 "CMake: configure(debug)"
-              ],
-              "group": {
-                "kind": "build",
-                "isDefault": true
-              }
+              ]
+              // ,"group": {
+              //   "kind": "build",
+              //   "isDefault": true
+              // }
             },
             {
               "label": "CMake: build release and strip",
@@ -159,7 +161,8 @@
                 "Zig: build aarch64-pc-windows-gnu release"
               ],
               "group": {
-                "kind": "build"
+                "kind": "build",
+                "isDefault": true
               }
             },
             {

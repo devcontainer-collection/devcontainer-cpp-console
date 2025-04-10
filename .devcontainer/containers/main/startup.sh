@@ -1,6 +1,10 @@
 #!/bin/bash
 
+set -e
+
 SCRIPT_NAME=$(basename "$0")
+
+trap 'echo "Exit $SCRIPT_NAME"' EXIT
 echo "Running $SCRIPT_NAME..."
 
 if [ ! -f "/.dockerenv" ]; then
@@ -8,9 +12,4 @@ if [ ! -f "/.dockerenv" ]; then
   exit 0
 fi
 
-set -e
-
 sh ./.devcontainer/containers/main/download_strip.sh
-
-echo "Exit $SCRIPT_NAME"
-echo
