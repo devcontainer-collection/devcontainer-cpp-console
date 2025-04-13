@@ -114,6 +114,16 @@ if [ "$BUILD_TYPE" = "dynamic" ]; then
           -std=c++20 \
           -o "$OUTDIR/${LIB_PREFIX}${NAME}.${EXT}"
 
+        # Fix install_name for .dylib on macOS
+        if [[ "$OS" == "macos" || "$OS" == "osx" ]] && [[ "$EXT" == "dylib" ]]; then
+          if command -v llvm-install-name-tool &>/dev/null; then
+            echo "[install_name] setting install_name to @rpath/${LIB_PREFIX}${NAME}.${EXT}"
+            llvm-install-name-tool -id "@rpath/${LIB_PREFIX}${NAME}.${EXT}" "$OUTDIR/${LIB_PREFIX}${NAME}.${EXT}"
+          else
+            echo "[install_name] ⚠️ llvm-install-name-tool not found in container. Skipping install_name fix."
+          fi
+        fi          
+
         echo "[build_libs_dynamic] ✅ Built: $OUTDIR/${LIB_PREFIX}${NAME}.${EXT}"
 
         if [ "$MODE" = "release" ]; then

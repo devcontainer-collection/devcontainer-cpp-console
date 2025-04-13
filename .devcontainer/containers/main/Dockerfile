@@ -1,4 +1,4 @@
-FROM rockylinux:9
+FROM rockylinux:9.3
 
 RUN dnf install -y epel-release && \
     dnf config-manager --set-enabled crb && \

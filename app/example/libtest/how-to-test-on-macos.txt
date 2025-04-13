@@ -1,0 +1,44 @@
+Build and Run Instructions
+
+	This directory must contain either:
+	- 'librandom_utils.dylib' for dynamic library test
+	- 'librandom_utils.a' for static library test
+
+[ Build the binary with dynamic library ]
+
+	Make sure to have the dynamic library in the same directory as the binary.
+	The static library file should not exist in the same directory.
+
+	Debug:
+	$ clang++ -O0 -g -std=c++20 -I. main.cpp -L. -lrandom_utils \
+  		-Wl,-rpath,@loader_path \
+  		-Wl,-install_name,@rpath/librandom_utils.dylib \
+		-o main_debug
+
+	Release:
+	$ clang++ -O3 -std=c++20 -I. main.cpp -L. -lrandom_utils \
+		-Wl,-rpath,@loader_path \
+  		-Wl,-install_name,@rpath/librandom_utils.dylib \
+		-o main
+
+[ Build the binary with static library ]
+
+	Make sure to have the static library in the same directory as the binary.
+	The dynamic library file should not exist in the same directory.
+
+	Debug:
+	$ clang++ -O0 -g -std=c++20 -I. main.cpp -L. -lrandom_utils -o main_debug
+
+	Release:
+	$ clang++ -O3 -std=c++20 -I. main.cpp -L. -lrandom_utils -o main
+
+[ Run the binary ]
+
+	// (macOS only and dynamic library only) Set dynamic library path:
+	// No longer necessary due to the use of llvm-install-name-tool and -rpath during the build process.
+	//$ export DYLD_LIBRARY_PATH=.
+
+	Then run:
+	$ ./main
+	or
+	$ ./main_debug
